@@ -120,6 +120,49 @@ void BuildFromLevel(node* root){
     }
 }
 
+int findHeight(node* root){
+    if(root==NULL){                             //Base Case
+        return 0;
+    }
+    //Processing
+    int left=findHeight(root->left);
+    int right=findHeight(root->right);
+    
+    int ans=max(left,right)+1;
+    return ans;                                 //Return
+}
+
+int diameter(node* root){                       //TC : O(N^2)
+    if(root==NULL){
+        return 0;
+    }
+    int opt1=diameter(root->left);
+    int opt2=diameter(root->right);
+    int opt3=findHeight(root->left) + 1 +findHeight(root->right);
+    
+    int ans=max(opt1,max(opt2,opt3));
+    return ans;
+}
+
+pair<int,int> diameterHeight(node* root){                   //TC ; O(N)
+    if(root==NULL){
+        pair<int,int> p=make_pair(0,0);
+        return p;
+    }
+    
+    pair<int,int> left=diameterHeight(root->left);
+    pair<int,int> right=diameterHeight(root->right);
+    
+    int opt1=left.first;
+    int opt2=right.first;
+    int opt3=left.second + 1 + right.second;
+    
+    pair<int,int> ans;
+    ans.first=max(opt1,max(opt2,opt3));
+    ans.second=max(left.second,right.second)+1;
+    return ans;
+}
+
 int main(){
     //Binary Tree
     
@@ -137,7 +180,7 @@ int main(){
     
     //Creation of binary tree
     
-    // Data : 1 3 7 -1 -1 11 -1 -1 5 17 -1 -1 18 -1 -1
+    // Data : 1 3 7 -1 -1 11 -1 -1 5 17 -1 -1 18 19 -1 -1 -1
     
     node* root=NULL;
     root=createTree(root);
@@ -167,7 +210,36 @@ int main(){
     PostOrder(root);
     
     //Build from level order
-    BuildFromLevel(root);
+    //BuildFromLevel(root);
+    
+    //Binary tree Day 2 Questions
+    
+    //Find Height of a Binary tree
+    //Height is basically the longest part between root to the leaf 
+    
+    //Expected Time Complexity: O(N)
+    
+    //Approach: Using recursion find max(right sub tree and left sub tree +1 
+    //base case: if root==NULL return 0;
+    cout<<"\nHeight of the tree : "<<findHeight(root);
+    
+    //Diameter of a Binary Tree
+    //Longest path between any two end nodes
+    
+    //Approach: we can find diameter in three different ways
+    //Option 1: Either it can be situated in left part of the tree
+    //Option 2: It can be situated in the right part of the tree
+    //Option 3: It can be situated in the combination of both right +left
+    //height(root->left)+1+height(root->right)
+    
+    cout<<"\nDiameter of the tree : "<<diameter(root);
+    
+    //Approach 2: instead of calling the height function from the diameter function why not we return both height and diameter
+    pair<int,int> p;
+    p=diameterHeight(root);
+    cout<<"\nDiameter of the tree : "<<p.first;
+    
+    
     
     return 0;
 }
